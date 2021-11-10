@@ -1,0 +1,16 @@
+version: '3'
+services:
+  python:
+    build: .
+    volumes:
+      - .:/src
+      - /tmp/.X11-unix:/tmp/.X11-unix
+    command: bash
+    environment:
+      - DISPLAY=$DISPLAY
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              capabilities: [gpu]

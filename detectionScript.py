@@ -7,7 +7,7 @@ import numpy as np
 
 
 class chess_digitizer:
-    def visualize(self, detect, board, corners):
+    def visualize(self, detect, board, corners, index = 0):
         board_img = board.curr_board_to_img()
 
         # draw board outline
@@ -38,8 +38,11 @@ class chess_digitizer:
 
         # draw imgs
         tp_img = np.hstack((cv2.cvtColor(detect.img_rgb, cv2.COLOR_BGR2RGB),board_img[0:384,0:384,0:3]))
-        cv2.imshow("Board", tp_img)
-        cv2.waitKey(0)
+
+        cv2.imwrite('/src/temp/' + str(index) + '.jpg', tp_img)
+        #    cv2.imwrite('/src/temp/' + str(index) + '.jpg', img)
+        #cv2.imshow("Board", tp_img)
+        #cv2.waitKey(0)
 
     def main(self):
         detect = ChessboardDetector(
@@ -47,7 +50,7 @@ class chess_digitizer:
         board = Chessboard()
         # cap = cv2.VideoCapture('input_imgs/20201209_111609.mp4')
 
-
+        index = 0
         filenames = glob.glob("input_imgs/*")
         filenames = sorted(filenames)
         for file in filenames:
@@ -56,7 +59,9 @@ class chess_digitizer:
             if len(corners) == 4:
                 predictions = detect.predictBoard(img, corners)
                 board.predictions_to_move(predictions)
-            self.visualize(detect, board, corners)
+            self.visualize(detect, board, corners, index)
+
+            index += 1
         # while True:
         #     ret, img = cap.read()
         #     # ret, img = cap.read()
